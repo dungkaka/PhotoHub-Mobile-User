@@ -4,6 +4,9 @@ import styles from "./index.style";
 import { useNavigation } from "@react-navigation/native";
 import { color } from "../../../utils/f";
 
+const collectionEmpty =
+  "https://firebasestorage.googleapis.com/v0/b/photohub-e7e04.appspot.com/o/assets%2Fcollection-empty.jpg?alt=media&token=d41df555-fb95-4b8a-9951-a7ffe06f5cca";
+
 const CollectionThumnail = (props) => {
   const navigation = useNavigation();
 
@@ -18,7 +21,9 @@ const CollectionThumnail = (props) => {
       >
         <Image
           source={{
-            uri: images_snippet[0] ? images_snippet[0].thumbnail_url : null,
+            uri: images_snippet[0]
+              ? images_snippet[0].thumbnail_url
+              : collectionEmpty,
             height: "100%",
             width: "100%",
           }}

@@ -1,5 +1,5 @@
 const preUrl = "https://photohub-e7e04.firebaseapp.com/api/v1/";
-// const preUrl = "http://localhost:5000/api/v1/";
+// const preUrl = "http://192.168.1.104:5000/api/v1/";
 
 export const URL = {
   LOGIN: () => {
@@ -55,6 +55,17 @@ export const URL = {
 
   DELETE_IMAGE_FROM_COLLECTION: (collection_id) => {
     return preUrl + `collections/${collection_id}/delete-image`;
+  },
+
+  GET_COLLECTION_BY_QR: (ownUser, collectionId) => {
+    return (
+      preUrl +
+      `collections/QR/get?ownUser=${ownUser}&collectionId=${collectionId}`
+    );
+  },
+
+  CLONE_COLLECTION: () => {
+    return preUrl + `collections/QR/clone`;
   },
 
   SEARCH_NEARBY: () => {

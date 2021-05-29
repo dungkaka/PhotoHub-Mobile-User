@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, FlatList, Text, Alert, TouchableOpacity } from "react-native";
+import {
+  View,
+  FlatList,
+  Text,
+  Alert,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import ImageThumbnail from "./ImageThumbnail";
 import { URL } from "../../../configs/end-points-url";
@@ -88,16 +95,20 @@ const CollectionDetail = () => {
           >
             {/* Button Share */}
             <TouchableOpacity
-              style={{
-                flex: 1,
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: "white",
-                padding: 12,
-              }}
+              onPress={() =>
+                navigation.push("Collection QR", {
+                  collectionId: collection.collection_id,
+                })
+              }
+              style={[
+                styles.option,
+                {
+                  backgroundColor: "white",
+                },
+              ]}
             >
-              <Feather name="share-2" color="black" size={24} />
+              <Feather name="share-2" color="black" size={22} />
+              <Text style={styles.textOption}>Share Collection</Text>
             </TouchableOpacity>
 
             {/* Button Edit */}
@@ -105,14 +116,17 @@ const CollectionDetail = () => {
               onPress={() => {
                 setModalVisible(true);
               }}
-              style={{
-                flex: 1,
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: color.greenBlue,
-              }}
+              style={[
+                styles.option,
+                {
+                  backgroundColor: color.greenBlue,
+                },
+              ]}
             >
-              <AntDesign name="edit" color="white" size={24}></AntDesign>
+              <AntDesign name="edit" color="white" size={22}></AntDesign>
+              <Text style={[styles.textOption, { color: "white" }]}>
+                Edit Name
+              </Text>
             </TouchableOpacity>
 
             {/* Button Delete */}
@@ -139,18 +153,21 @@ const CollectionDetail = () => {
                   null
                 );
               }}
-              style={{
-                flex: 1,
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: color.blueModern2,
-              }}
+              style={[
+                styles.option,
+                {
+                  backgroundColor: color.blueModern2,
+                },
+              ]}
             >
               <MaterialCommunityIcons
                 name="delete-outline"
-                size={26}
+                size={24}
                 color="white"
               ></MaterialCommunityIcons>
+              <Text style={[styles.textOption, { color: "white" }]}>
+                Delete Collection
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -167,3 +184,18 @@ const CollectionDetail = () => {
 };
 
 export default CollectionDetail;
+
+const styles = StyleSheet.create({
+  option: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: 7,
+    paddingBottom: 3,
+  },
+  textOption: {
+    fontSize: 12,
+    paddingTop: 3,
+  },
+});

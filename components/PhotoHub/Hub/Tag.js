@@ -29,7 +29,7 @@ const Tag = ({ tag, onSelect, reset }) => {
     >
       <Text style={selected ? { color: "white" } : { color: "dimgray" }}>
         {" "}
-        {tag.name.vi}
+        {tag.name.en}
       </Text>
     </TouchableOpacity>
   );

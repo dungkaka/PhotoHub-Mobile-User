@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Blank Template",
+    "name": "PhotoHub",
     "slug": "PhotoHub-User",
     "privacy": "public",
     "sdkVersion": "36.0.0",
@@ -20,7 +20,12 @@
           "apiKey": "AIzaSyDUSV5IbIAyEishshZm2xL_xH1Vnl2PuK8"
         }
       },
-      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"]
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "CAMERA",
+        "NOTIFICATIONS"
+      ]
     },
     "ios": {
       "supportsTablet": true,

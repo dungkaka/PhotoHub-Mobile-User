@@ -27,9 +27,9 @@ const avatar_1 =
   "https://firebasestorage.googleapis.com/v0/b/photohub-e7e04.appspot.com/o/avatar%2Favatar_1.jpg?alt=media&token=3efbdede-a9ca-4bd6-95f3-9cd9383e6379";
 
 const ModalResult = forwardRef(
-  ({ reset, nears, labelSearch, locationSearch }, ref) => {
+  ({ reset, nears, labelSearch, locationSearch, getDirections }, ref) => {
     const navigation = useNavigation();
-    const refSearch = useRef();
+    const refResult = useRef();
 
     useFocusEffect(
       useCallback(() => {
@@ -45,6 +45,7 @@ const ModalResult = forwardRef(
     );
 
     const renderResult = (photographer) => {
+      console.log("NEAR------", photographer);
       const { name, age, gender, address } = photographer.photographerInfor;
       const distance = haversine_distance(locationSearch, photographer);
 
@@ -54,12 +55,23 @@ const ModalResult = forwardRef(
             <View style={styles.result}>
               {/* Image and detail of photogeapher */}
               <View style={styles.topResult}>
-                <Image
-                  style={styles.image}
-                  source={{
-                    uri: avatar_1,
-                  }}
-                ></Image>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("PGProfile", {
+                      photographer: {
+                        ...photographer.photographerInfor,
+                        id: photographer.photographerId,
+                      },
+                    })
+                  }
+                >
+                  <Image
+                    style={styles.image}
+                    source={{
+                      uri: avatar_1,
+                    }}
+                  ></Image>
+                </TouchableOpacity>
 
                 <View style={styles.contentResult}>
                   <Text
@@ -83,11 +95,20 @@ const ModalResult = forwardRef(
               <View style={styles.bottomResult}>
                 <View style={styles.distance}>
                   <Text style={styles.numberDistance}>
-                    {" "}
-                    {(1000 * distance).toFixed(0)}
+                    {distance.toFixed(2)}
                   </Text>
-                  <Text style={styles.unit}> metter</Text>
+                  <Text style={styles.unit}> km</Text>
                 </View>
+
+                <TouchableOpacity
+                  style={styles.buttonDirection}
+                  onPress={async () => {
+                    await getDirections(locationSearch, photographer);
+                    refResult.current.snapTo(1);
+                  }}
+                >
+                  <Text style={styles.textDirection}>Direction</Text>
+                </TouchableOpacity>
 
                 <TouchableOpacity
                   style={styles.buttonConnect}
@@ -99,6 +120,7 @@ const ModalResult = forwardRef(
                       },
                       location: photographer,
                       distance: distance,
+                      fromMap: true,
                     });
                   }}
                 >
@@ -126,17 +148,23 @@ const ModalResult = forwardRef(
         </TouchableOpacity>
         <View
           style={{
+            flex: 1,
             flexDirection: "row",
             alignItems: "center",
             marginHorizontal: 10,
+            borderRadius: 25,
+            paddingHorizontal: 10,
+            backgroundColor: color.gray0,
+            borderColor: color.gray2,
+            borderWidth: 1,
           }}
         >
-          <Entypo
-            name="location-pin"
-            size={20}
-            color={color.blueModern1}
-          ></Entypo>
-          <Text style={styles.textLabelSearch}>
+          <Entypo name="location-pin" size={18} color={color.blueModern1} />
+          <Text
+            style={styles.textLabelSearch}
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
             {labelSearch ? labelSearch : ""}
           </Text>
         </View>
@@ -144,24 +172,12 @@ const ModalResult = forwardRef(
     );
 
     const renderContent = () => (
-      <View style={styles.contentContainer}>
+      <View style={[styles.contentContainer, { height: nears.length * 170 }]}>
         {nears.length > 0 ? (
           <View>
             <FlatList
               keyboardDismissMode="on-drag"
-              keyExtractor={(item) => item.locationId}
-              data={nears}
-              renderItem={({ item }) => renderResult(item)}
-            />
-            <FlatList
-              keyboardDismissMode="on-drag"
-              keyExtractor={(item) => item.locationId}
-              data={nears}
-              renderItem={({ item }) => renderResult(item)}
-            />
-            <FlatList
-              keyboardDismissMode="on-drag"
-              keyExtractor={(item) => item.locationId}
+              keyExtractor={(item) => item.id}
               data={nears}
               renderItem={({ item }) => renderResult(item)}
             />
@@ -190,7 +206,7 @@ const ModalResult = forwardRef(
         }}
       >
         <BottomSheet
-          ref={refSearch}
+          ref={refResult}
           initialSnap={1}
           snapPoints={["80%", "40%"]}
           renderContent={renderContent}
@@ -218,23 +234,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   contentContainer: {
-    minHeight: "100%",
+    minHeight: 640,
     width: "100%",
     backgroundColor: "white",
     paddingHorizontal: 20,
+    marginBottom: 0,
   },
   textLabelSearch: {
-    // marginHorizontal: 10,
-    // borderRadius: 20,
-    // borderColor: color.greenBlue,
-    // borderWidth: 1,
-    paddingHorizontal: 5,
+    paddingStart: 5,
+    paddingEnd: 20,
     paddingVertical: 5,
-    color: color.blueModern1,
-    flex: 1,
+    color: color.gray8,
     textAlignVertical: "center",
-    maxHeight: 60,
-    fontSize: 18,
+    fontSize: 15,
   },
   containerResult: {
     marginVertical: 8,
@@ -265,9 +277,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "flex-end",
-    paddingHorizontal: 10,
     marginTop: 10,
     marginBottom: 5,
+    paddingHorizontal: 5,
   },
   distance: {
     flex: 1,
@@ -287,12 +299,25 @@ const styles = StyleSheet.create({
     textAlignVertical: "bottom",
   },
   buttonConnect: {
-    backgroundColor: color.greenBlue,
-    paddingHorizontal: 20,
+    backgroundColor: color.blueDark,
+    paddingStart: 10,
+    paddingEnd: 15,
     paddingVertical: 10,
-    borderRadius: 20,
+    borderTopEndRadius: 20,
+    borderBottomEndRadius: 20,
   },
   textConnect: {
     color: "white",
+  },
+  buttonDirection: {
+    backgroundColor: "white",
+    paddingStart: 15,
+    paddingEnd: 10,
+    paddingVertical: 10,
+    borderTopStartRadius: 20,
+    borderBottomStartRadius: 20,
+  },
+  textDirection: {
+    color: color.blueDark,
   },
 });

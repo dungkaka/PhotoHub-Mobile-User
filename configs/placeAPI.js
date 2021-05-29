@@ -1,4 +1,5 @@
 export const placeKey = "AIzaSyDtcGbHI5ScdAQA960fWmgW9d_gUl6PQiM";
+export const directionKey = "AIzaSyD9WHWvwpGUEwlSj3HCCF22Je5cwty71b8";
 
 export const hereKeyAPI = "dUJ5QATKNp_h_OfYqzZVrEUC8ajdw09Cm3xLcA1qIYg";
 

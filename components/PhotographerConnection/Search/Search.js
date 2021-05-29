@@ -15,6 +15,11 @@ import axios from "axios";
 import { useGoBackHandler } from "./../../../utils/custom-hook";
 import { LinearGradient } from "expo-linear-gradient";
 import { rainBowGradient, gradient } from "./../../../utils/gradient";
+import ContentLoader, {
+  Rect,
+  Circle,
+  Facebook,
+} from "react-content-loader/native";
 
 const baseUrl =
   "https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json?";
@@ -188,7 +193,57 @@ const Search = () => {
 
       <View style={styles.listContainer}>
         {searching ? (
-          <Text>LOADING</Text>
+          <View style={{ marginVertical: 10 }}>
+            <ContentLoader
+              speed={1}
+              width="100%"
+              height={70}
+              backgroundColor={color.gray1}
+              foregroundColor="#ffffff"
+            >
+              <Rect x="20" y="10" rx="5" ry="5" width="20%" height="10" />
+              <Rect x="20" y="30" rx="5" ry="5" width="100%" height="10" />
+              <Rect x="20" y="50" rx="5" ry="5" width="100%" height="10" />
+            </ContentLoader>
+            <View
+              style={{
+                height: 1,
+                width: "100%",
+                backgroundColor: color.gray2,
+                marginTop: 20,
+              }}
+            ></View>
+            <ContentLoader
+              speed={1}
+              width="100%"
+              height={70}
+              backgroundColor={color.gray1}
+              foregroundColor="#ffffff"
+            >
+              <Rect x="20" y="10" rx="5" ry="5" width="20%" height="10" />
+              <Rect x="20" y="30" rx="5" ry="5" width="100%" height="10" />
+              <Rect x="20" y="50" rx="5" ry="5" width="100%" height="10" />
+            </ContentLoader>
+            <View
+              style={{
+                height: 1,
+                width: "100%",
+                backgroundColor: color.gray2,
+                marginTop: 20,
+              }}
+            ></View>
+            <ContentLoader
+              speed={1}
+              width="100%"
+              height="100%"
+              backgroundColor={color.gray1}
+              foregroundColor="#ffffff"
+            >
+              <Rect x="20" y="10" rx="5" ry="5" width="20%" height="10" />
+              <Rect x="20" y="30" rx="5" ry="5" width="100%" height="10" />
+              <Rect x="20" y="50" rx="5" ry="5" width="100%" height="10" />
+            </ContentLoader>
+          </View>
         ) : (
           <FlatList
             keyExtractor={(item) => item.locationId}

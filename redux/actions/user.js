@@ -1,7 +1,7 @@
 import { AsyncStorage } from "react-native";
 import request from "../../utils/axios";
 import { URL } from "../../configs/end-points-url";
-import { loginSuccess } from './login';
+import { loginSuccess } from "./login";
 
 export const setUser = (user) => ({
   type: "SET_USER_SUCCESS",
@@ -14,8 +14,10 @@ export const setUserFromAsyncStorage = () => {
   return async (dispatch) => {
     dispatch({ type: "SET_USER_START" });
     let user = null;
+    let userAsync = null;
     try {
-      user = await AsyncStorage.getItem("user");
+      userAsync = await AsyncStorage.getItem("user");
+      user = JSON.parse(userAsync);
     } catch (error) {
       user = null;
     }
@@ -37,9 +39,9 @@ export const setUserFromServer = () => {
 
       if (data.user) {
         dispatch(setUser(data.user));
-        AsyncStorage.setItem("user", data.user);
+        AsyncStorage.setItem("user", JSON.stringify(data.user));
       } else {
-        throw new Error("Can not retrive user from Server");
+        throw new Error("Can not retrieve user from Server");
       }
     } catch (error) {
       console.log(error.message);

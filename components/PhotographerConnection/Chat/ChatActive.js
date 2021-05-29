@@ -14,6 +14,9 @@ import { URL } from "../../../configs/end-points-url";
 import { useNavigation } from "@react-navigation/native";
 import { color } from "../../../utils/f";
 const window = Dimensions.get("window");
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import customAlert from "../../Common/CustomAlert";
+import Spinner from "react-native-loading-spinner-overlay";
 const avatar_1 =
   "https://firebasestorage.googleapis.com/v0/b/photohub-e7e04.appspot.com/o/avatar%2Favatar_1.jpg?alt=media&token=3efbdede-a9ca-4bd6-95f3-9cd9383e6379";
 
@@ -32,10 +35,27 @@ const ChatActive = () => {
       const response = await request.server.get(URL.GET_LIST_ACTIVE_CHAT());
       const data = response.data;
 
-      console.log("DATA", data);
-
       if (data.status == true) {
         setListActiveChat(data.chatRooms);
+        setFetching(false);
+      } else throw Error(data.message);
+    } catch (error) {
+      setFetching(false);
+      console.log(error.message);
+    }
+  };
+
+  const deactivateChat = async (item) => {
+    console.log("CHATROOM", item);
+    try {
+      setFetching(true);
+      const response = await request.server.put(
+        URL.DEACTIVATE_CHATROOM(item.id)
+      );
+      const data = response.data;
+
+      if (data.status == true) {
+        setListActiveChat(listActiveChat.filter((chat) => chat.id != item.id));
         setFetching(false);
       } else throw Error(data.message);
     } catch (error) {
@@ -52,9 +72,11 @@ const ChatActive = () => {
           style={styles.chatItem}
           onPress={() => {
             navigation.push("Chat", {
+              room_id: item.id,
               photographer: {
                 ...item.photographer,
               },
+              fromChat: true,
             });
           }}
         >
@@ -80,8 +102,36 @@ const ChatActive = () => {
                   color: "white",
                 }}
               >
-                Information
+                Photography
               </Text>
+            </View>
+
+            <View style={styles.deactiveChat}>
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: "flex-end",
+                  justifyContent: "center",
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => {
+                    customAlert(
+                      "Are you sure to deactive this connect !",
+                      () => {
+                        deactivateChat(item);
+                      },
+                      () => {}
+                    );
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name="delete-outline"
+                    size={24}
+                    color="white"
+                  ></MaterialCommunityIcons>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </TouchableOpacity>
@@ -91,12 +141,18 @@ const ChatActive = () => {
 
   return (
     <ImageBackground
-      source={require("./../../../assets/images/background-1.png")}
+      source={require("./../../../assets/images/background-1.jpg")}
       resizeMode="cover"
       style={{
         flex: 1,
       }}
     >
+      <Spinner
+        visible={fetching}
+        textStyle={{ color: "black" }}
+        cancelable={true}
+        animation="fade"
+      />
       <FlatList
         style={{ marginHorizontal: 10, marginTop: 80 }}
         keyExtractor={(item) => item.id}
@@ -136,5 +192,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginTop: 10,
     marginBottom: 5,
+  },
+  deactiveChat: {
+    flex: 1,
+    flexDirection: "row",
   },
 });

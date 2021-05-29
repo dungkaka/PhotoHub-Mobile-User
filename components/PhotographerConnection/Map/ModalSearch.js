@@ -13,6 +13,7 @@ import {
   TouchableHighlight,
   StyleSheet,
   TextInput,
+  TouchableWithoutFeedback,
 } from "react-native";
 import BottomSheet from "reanimated-bottom-sheet";
 import { useNavigation } from "@react-navigation/native";
@@ -65,12 +66,12 @@ const ModalSearch = forwardRef(({ getMyLocation, searchMyLocation }, ref) => {
             Where would you like to find ?{" "}
           </Text>
         </View>
-        <TouchableHighlight onPress={() => navigation.navigate("Search")}>
+        <TouchableWithoutFeedback onPress={() => navigation.navigate("Search")}>
           <View style={styles.typeLocation}>
             <Entypo name="location-pin" style={styles.typeIcon}></Entypo>
             <Text style={styles.type}> Search for a location </Text>
           </View>
-        </TouchableHighlight>
+        </TouchableWithoutFeedback>
 
         <TouchableOpacity onPress={() => searchMyLocation()}>
           <LinearGradient
@@ -114,7 +115,7 @@ const ModalSearch = forwardRef(({ getMyLocation, searchMyLocation }, ref) => {
     >
       <BottomSheet
         ref={refSearch}
-        initialSnap={0}
+        initialSnap={1}
         snapPoints={["40%", 0]}
         renderContent={renderContent}
         renderHeader={renderSearch}

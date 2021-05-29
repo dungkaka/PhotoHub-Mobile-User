@@ -18,30 +18,6 @@ import ContentLoader, {
 
 const ModalLoading = forwardRef((props, ref) => {
   const refSearch = useRef();
-  const [reLoad, setReLoad] = useState(false);
-
-  // useEffect(() => {
-  //   switchModal(visible);
-  // }, [visible]);
-
-  // const switchModal = async (visible) => {
-  //   switch (visible) {
-  //     case true:
-  //       await delay(2000);
-  //       refSearch.current.snapTo(0);
-  //       // await delay(2000);
-  //       // setReLoad(!reLoad);
-  //       break;
-  //     case false:
-  //       await delay(200);
-  //       refSearch.current.snapTo(1);
-  //       // await delay(100);
-  //       // setReLoad(!reLoad);
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
 
   useImperativeHandle(ref, () => ({
     async open() {

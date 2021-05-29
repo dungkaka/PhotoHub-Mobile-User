@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import {
   View,
   Text,
@@ -6,10 +6,16 @@ import {
   Image,
   TouchableOpacity,
   StatusBar,
+  AppState,
+  KeyboardAvoidingView,
 } from "react-native";
 import { useSelector } from "react-redux";
 import { firestoreRef } from "../../../configs/firebase-config";
-import { useRoute, useNavigation } from "@react-navigation/native";
+import {
+  useRoute,
+  useNavigation,
+  useFocusEffect,
+} from "@react-navigation/native";
 import {
   GiftedChat,
   Avatar,
@@ -28,10 +34,13 @@ import { Facebook } from "react-content-loader/native";
 import customAlert from "./../../Common/CustomAlert/index";
 import { random_rainbowGradient } from "../../../utils/gradient";
 import { LinearGradient } from "expo-linear-gradient";
+import { Notifications } from "expo";
 
 const { isSameUser, isSameDay } = utils;
 
 const chatRef = firestoreRef.collection("chat");
+const userRef = firestoreRef.collection("users");
+
 const avatar_1 =
   "https://firebasestorage.googleapis.com/v0/b/photohub-e7e04.appspot.com/o/avatar%2Favatar_1.jpg?alt=media&token=3efbdede-a9ca-4bd6-95f3-9cd9383e6379";
 const avatar_2 =
@@ -43,9 +52,56 @@ const Chat = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const user = useSelector((store) => store.user.user);
-  const { photographer, location, distance } = route.params ? route.params : {};
+  const {
+    photographer,
+    location,
+    distance,
+    fromMap,
+    fromChat,
+    room_id,
+  } = route.params ? route.params : {};
   const { name, age, gender, address } = photographer;
-  const randomGradient = random_rainbowGradient();
+  const [randomGradient, setRandomGradent] = useState(random_rainbowGradient());
+
+  useEffect(() => {
+    userRef
+      .doc(photographer.id)
+      .get()
+      .then((snapshot) => {
+        navigation.setParams({
+          photographer: { ...snapshot.data(), id: snapshot.id },
+        });
+      });
+    AppState.addEventListener("change", handleAppStateChange);
+    Notifications.deleteChannelAndroidAsync("chatapplication");
+
+    return () => {
+      AppState.removeEventListener("change", handleAppStateChange);
+      Notifications.createChannelAndroidAsync("chatapplication", {
+        name: "PhotoHub",
+        title: "Message",
+        sound: true,
+        priority: "max",
+        vibrate: [0, 250, 250, 250],
+      });
+    };
+  }, []);
+
+  const handleAppStateChange = (nextAppState) => {
+    if (AppState.currentState == "active") {
+      console.log("ACTIVE");
+      Notifications.deleteChannelAndroidAsync("chatapplication");
+    } else {
+      console.log("BACKGROUND / INACTIVE");
+      Notifications.createChannelAndroidAsync("chatapplication", {
+        name: "PhotoHub",
+        title: "Message",
+        sound: true,
+        priority: "max",
+        vibrate: [0, 250, 250, 250],
+      });
+    }
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: color.backgroundAndroid }}>
@@ -121,21 +177,34 @@ const Chat = () => {
           </View>
         </View>
       </LinearGradient>
-      <ChatScreen
-        user={user}
-        photographer={photographer}
-        location={location}
-        randomGradient={randomGradient}
-      />
+
+      {photographer.username ? (
+        <ChatScreen
+          user={user}
+          photographer={photographer}
+          location={location}
+          randomGradient={randomGradient}
+          fromMap={fromMap}
+          fromChat={fromChat}
+          room_id={room_id}
+        />
+      ) : null}
     </View>
   );
 };
 
-const ChatScreen = ({ user, photographer, randomGradient }) => {
+const ChatScreen = ({
+  user,
+  photographer,
+  randomGradient,
+  fromMap,
+  fromChat,
+  room_id,
+}) => {
   const roomChat = useRef();
   const [fetchingRoom, setFetchingRoom] = useState(false);
   const [messages, setMessages] = useState([]);
-  const [active, setActive] = useState(true);
+  const [active, setActive] = useState(false);
 
   const [error, setError] = useState(false);
 
@@ -147,11 +216,20 @@ const ChatScreen = ({ user, photographer, randomGradient }) => {
       try {
         if (photographer && user) {
           // Check where exist room chat containing user and photographer
-
-          const chatRoomSnapshot = await chatRef
-            .where("user.id", "==", user.id)
-            .where("photographer.id", "==", photographer.id)
-            .get();
+          let chatRoomSnapshot = null;
+          if (fromChat) {
+            console.log("ID", room_id);
+            chatRoomSnapshot = await chatRef.doc(room_id).get();
+            chatRoomSnapshot = {
+              docs: [chatRoomSnapshot],
+            };
+          } else {
+            chatRoomSnapshot = await chatRef
+              .where("user.id", "==", user.id)
+              .where("photographer.id", "==", photographer.id)
+              .where("active", "==", true)
+              .get();
+          }
 
           // If no chatRoom exist, create New, and add chat room ref. Elsem just get room chat ref
           if (chatRoomSnapshot.empty) {
@@ -172,13 +250,18 @@ const ChatScreen = ({ user, photographer, randomGradient }) => {
               })
               .then((docRef) => {
                 roomChat.current = docRef;
+                setActive(true);
                 setFetchingRoom(false);
                 unsubcribeChatRoom = roomChat.current
                   .collection("messages")
                   .onSnapshot((snapshot) => {
                     snapshot.docChanges().forEach((change) => {
+                      const newMessage = {
+                        ...change.doc.data(),
+                        createdAt: change.doc.data().createdAt.toDate(),
+                      };
                       setMessages((preMessage) =>
-                        GiftedChat.append(preMessage, change.doc.data())
+                        GiftedChat.append(preMessage, newMessage)
                       );
                     });
                   });
@@ -186,8 +269,10 @@ const ChatScreen = ({ user, photographer, randomGradient }) => {
           } else {
             // Check if the room active or inactive. If active, realtime listen, if inactive, just fetching data.
             const active = chatRoomSnapshot.docs[0].data().active;
+            console.log("ROOM", chatRoomSnapshot.docs[0].data());
             roomChat.current = chatRoomSnapshot.docs[0].ref;
             if (active) {
+              setActive(true);
               setFetchingRoom(false);
               unsubcribeChatRoom = roomChat.current
                 .collection("messages")
@@ -205,17 +290,59 @@ const ChatScreen = ({ user, photographer, randomGradient }) => {
                   );
                 });
             } else {
-              roomChat.current
-                .collection("message")
-                .orderBy("createdAt", "desc")
-                .get()
-                .then((snapshot) => {
-                  const messages = [];
-                  for (let doc of snapshot.docs) {
-                    messages.push(doc.data());
-                  }
-                  setMessages(messages);
-                });
+              if (fromMap) {
+                chatRef
+                  .add({
+                    createdAt: new Date(),
+                    active: true,
+                    user: {
+                      id: user.id,
+                      name: user.name ? user.name : user.username,
+                    },
+                    photographer: {
+                      id: photographer.id,
+                      name: photographer.name
+                        ? photographer.name
+                        : photographer.username,
+                    },
+                  })
+                  .then((docRef) => {
+                    roomChat.current = docRef;
+                    setActive(true);
+                    setFetchingRoom(false);
+                    unsubcribeChatRoom = roomChat.current
+                      .collection("messages")
+                      .onSnapshot((snapshot) => {
+                        snapshot.docChanges().forEach((change) => {
+                          const newMessage = {
+                            ...change.doc.data(),
+                            createdAt: change.doc.data().createdAt.toDate(),
+                          };
+                          setMessages((preMessage) =>
+                            GiftedChat.append(preMessage, newMessage)
+                          );
+                        });
+                      });
+                  });
+              } else {
+                console.log("HIHIHI");
+                roomChat.current
+                  .collection("messages")
+                  .orderBy("createdAt", "desc")
+                  .get()
+                  .then((snapshot) => {
+                    const messages = [];
+                    for (let doc of snapshot.docs) {
+                      messages.push({
+                        ...doc.data(),
+                        createdAt: doc.data().createdAt.toDate(),
+                      });
+                    }
+                    setMessages((preMessages) =>
+                      GiftedChat.append(preMessages, messages)
+                    );
+                  });
+              }
             }
           }
         }
@@ -229,14 +356,37 @@ const ChatScreen = ({ user, photographer, randomGradient }) => {
     return () => {
       unsubcribeChatRoom();
     };
-  }, []);
+  }, [photographer]);
 
-  const onSend = (message = []) => {
-    roomChat.current.collection("messages").add(message[0]);
+  const onSend = async (message = []) => {
+    try {
+      await roomChat.current.collection("messages").add(message[0]);
+      const messagePush = {
+        to: photographer.tokenPushNotification,
+        sound: "default",
+        title: "Message",
+        body: (user.name ? user.name : user.username) + ": " + message[0].text,
+        data: { data: "goes here 1" },
+        _displayInForeground: false,
+        channelId: "chatapplication",
+      };
+      const response = await fetch("https://exp.host/--/api/v2/push/send", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Accept-encoding": "gzip, deflate",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(messagePush),
+      });
+    } catch (error) {}
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS == "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
       <GiftedChat
         messages={messages}
         onSend={(messages) => onSend(messages)}
@@ -263,6 +413,7 @@ const ChatScreen = ({ user, photographer, randomGradient }) => {
             }}
           />
         )}
+        disableComposer={!active}
         renderMessage={(props) => <Message {...props} />}
         renderMessageText={(props) => (
           <LinearGradient colors={randomGradient} start={[0, 0]} end={[1, 1]}>
@@ -329,7 +480,7 @@ const ChatScreen = ({ user, photographer, randomGradient }) => {
         )}
         renderLoading={() => <Facebook />}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

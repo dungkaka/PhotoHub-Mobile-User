@@ -10,12 +10,12 @@ import PhotoHub from "../components/PhotoHub/index";
 import Animated from "react-native-reanimated";
 import Collection from "./../components/Collection/index";
 import PhotographerConnection from "../components/PhotographerConnection";
+import QRCode from "./../components/QRCode/index";
 
 // const image = require("./../assets/images/backround-1.png");
 const Drawer = createDrawerNavigator();
 
 const App = ({ navigation }) => {
-
   const [progress, setProgress] = useState(new Animated.Value(0));
   // create animation for screen scale
   const scale = Animated.interpolate(progress, {
@@ -40,7 +40,7 @@ const App = ({ navigation }) => {
 
   return (
     <ImageBackground
-      source={require("./../assets/images/background-4.png")}
+      source={require("./../assets/images/background-back.jpg")}
       resizeMode="cover"
       style={{
         flex: 1,
@@ -63,17 +63,12 @@ const App = ({ navigation }) => {
           return <DrawerContent {...props} rootNavigation={navigation} />;
         }}
       >
-        <Drawer.Screen name="PhotoHub">
-          {(props) => <PhotoHub {...props} style={animatedStyle} />}
-        </Drawer.Screen>
-        <Drawer.Screen name="Collection">
-          {(props) => <Collection {...props} style={animatedStyle} />}
-        </Drawer.Screen>
+        <Drawer.Screen name="PhotoHub">{(props) => <PhotoHub {...props} style={animatedStyle} />}</Drawer.Screen>
+        <Drawer.Screen name="Collection">{(props) => <Collection {...props} style={animatedStyle} />}</Drawer.Screen>
         <Drawer.Screen name="PhotographerConnection">
-          {(props) => (
-            <PhotographerConnection {...props} style={animatedStyle} />
-          )}
+          {(props) => <PhotographerConnection {...props} style={animatedStyle} />}
         </Drawer.Screen>
+        <Drawer.Screen name="QRCode">{(props) => <QRCode {...props} style={animatedStyle} />}</Drawer.Screen>
         <Drawer.Screen name="About" component={About} />
       </Drawer.Navigator>
     </ImageBackground>

@@ -11,6 +11,7 @@ import ChatContainer from "./Chat/index";
 import ChatActive from "./Chat/ChatActive";
 import ChatInActive from "./Chat/ChatInActive";
 import { color } from "../../utils/f";
+import PGProfile from "./PhotographerProfile/index";
 
 const Stack = createStackNavigator();
 
@@ -106,6 +107,34 @@ const PhotographerConnection = ({ navigation, style }) => {
         />
 
         <Stack.Screen
+          name="PGProfile"
+          component={PGProfile}
+          options={{
+            title: "",
+            headerLeft: ({ onPress }) => (
+              <TouchableOpacity
+                onPress={() => onPress()}
+                style={{
+                  marginLeft: 16,
+                  backgroundColor: `rgba(255,255,255,0.6)`,
+                  padding: 6,
+                  borderRadius: 100,
+                  shadowColor: "black",
+                  shadowOpacity: 0.8,
+                  shadowRadius: 5,
+                  elevation: 5,
+                  alignContent: "center",
+                }}
+              >
+                <AntDesign name="arrowleft" size={24}></AntDesign>
+              </TouchableOpacity>
+            ),
+            headerShown: true,
+            headerTransparent: true,
+          }}
+        />
+
+        <Stack.Screen
           name="Chat"
           component={ChatContainer}
           options={{
@@ -182,7 +211,7 @@ const PhotographerConnection = ({ navigation, style }) => {
               </View>
             ),
             headerTransparent: true,
-            headerTitle: "Bin",
+            headerTitle: "History",
             headerTitleStyle: {
               color: "white",
             },

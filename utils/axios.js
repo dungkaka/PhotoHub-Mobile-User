@@ -2,7 +2,6 @@ import axios from "axios";
 
 const request = {
   server: axios.create({
-    // timeout: 5,
     headers: {
       "Content-Type": "application/json",
     },

@@ -64,7 +64,7 @@ const MyCollectionContainer = () => {
 
       <View style={{ flex: 1 }}>
         <FlatList
-          style={{ margin: 4 }}
+          style={{ margin: 4, marginBottom: 0 }}
           numColumns={2}
           keyExtractor={(item) => item.collection_id.toString()}
           data={collections}
@@ -86,15 +86,19 @@ const MyCollectionContainer = () => {
         style={{
           position: "absolute",
           bottom: 0,
-          width: "100%",
+          flexDirection: "row",
           backgroundColor: "transparent",
           opacity: 0.9,
           shadowColor: "black",
           shadowOpacity: 1,
           elevation: 30,
+          margin: 5,
+          borderRadius: 20,
+          overflow: "hidden",
         }}
       >
         <LinearGradient
+          style={{ width: "100%" }}
           colors={rainBowGradient.blue}
           start={[0, 0]}
           end={[1, 1]}
@@ -107,6 +111,7 @@ const MyCollectionContainer = () => {
               alignItems: "center",
               justifyContent: "center",
               padding: 15,
+              borderRadius: 20,
             }}
           >
             <MaterialIcons

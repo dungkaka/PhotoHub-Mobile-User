@@ -1,22 +1,35 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { Button, Block } from "expo-ui-kit/src";
+import { Button } from "react-native";
 import request from "./../../../utils/axios";
 import { URL } from "../../../configs/end-points-url";
 import { ScrollView } from "react-native-gesture-handler";
 import { styles } from "./index.style";
 import Tag from "./Tag";
+import { useSelector, useDispatch } from "react-redux";
 
 const TagSelector = ({ navigation }) => {
-  const [tags, setTags] = useState([]);
+  const tags = useSelector((store) => store.tags.tags);
+  const dispatch = useDispatch();
   const [resetSelector, setResetSelector] = useState(false);
   const tagSelector = useRef([]);
 
   const getTags = async () => {
     try {
       const response = await request.server.get(URL.GET_TAGS());
-      setTags(response.data.tags);
-    } catch (error) {}
+      if (response.data?.status) {
+        dispatch({
+          type: "GET_TAGS_SUCCESS",
+          payload: {
+            tags: response.data.tags,
+          },
+        });
+      } else {
+        throw new Error("Error! Try again !");
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   useEffect(() => {
@@ -60,7 +73,7 @@ const TagSelector = ({ navigation }) => {
         <View>
           <Text style={{ marginBottom: 3, color: "#0785b0" }}>
             {" "}
-            {item.categoryName.vi}{" "}
+            {item.categoryName.en}{" "}
           </Text>
         </View>
         <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
@@ -69,7 +82,6 @@ const TagSelector = ({ navigation }) => {
       </View>
     );
   };
-
 
   return (
     <View style={{ flex: 1 }}>
@@ -89,7 +101,7 @@ const TagSelector = ({ navigation }) => {
           marginBottom: 10,
         }}
       >
-        <Button
+        <TouchableOpacity
           style={[styles.button, styles.buttonReset]}
           onPress={() => {
             setResetSelector(!resetSelector);
@@ -97,18 +109,19 @@ const TagSelector = ({ navigation }) => {
           }}
         >
           <Text style={{ color: "#f74f31" }}> RESET </Text>
-        </Button>
-        <Button
+        </TouchableOpacity>
+        <TouchableOpacity
           style={[styles.button, styles.buttonConfirm]}
           onPress={() =>
             navigation.navigate("HubContainer", {
               tags: tagSelector.current,
               fromTagSelector: true,
+              fromCategory: false,
             })
           }
         >
           <Text style={{ color: "white" }}> CONFIRM </Text>
-        </Button>
+        </TouchableOpacity>
       </View>
     </View>
   );

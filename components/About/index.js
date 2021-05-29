@@ -1,67 +1,105 @@
-import React from "react";
-import { StyleSheet, View } from "react-native";
-import { Block } from "expo-ui-kit";
-import { Button, Text } from "expo-ui-kit/src";
+import React, { useEffect, useState, useRef } from "react";
+import { Text, View, Button, Vibration, Platform } from "react-native";
+import { Notifications } from "expo";
+import * as Permissions from "expo-permissions";
+import Constants from "expo-constants";
 
 const About = ({ navigation }) => {
+  const [state, setState] = useState({
+    expoPushToken: "",
+    notification: {
+      origin: null,
+      data: {},
+    },
+  });
+
+  const registerForPushNotificationsAsync = async () => {
+    if (Constants.isDevice) {
+      const { status: existingStatus } = await Permissions.getAsync(
+        Permissions.NOTIFICATIONS
+      );
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Permissions.askAsync(
+          Permissions.NOTIFICATIONS
+        );
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      let token = await Notifications.getExpoPushTokenAsync();
+      console.log(token);
+      setState({ ...state, expoPushToken: token });
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+
+    if (Platform.OS === "android") {
+      Notifications.createChannelAndroidAsync("default", {
+        name: "default",
+        sound: true,
+        priority: "max",
+        vibrate: [0, 250, 250, 250],
+      });
+    }
+  };
+
+  useEffect(() => {
+    registerForPushNotificationsAsync();
+    Notifications.addListener(_handleNotification);
+  }, []);
+
+  const _handleNotification = (notification) => {
+    Vibration.vibrate();
+    console.log("NOTIFI", notification);
+    setState({
+      ...state,
+      notification: notification,
+    });
+  };
+
+  const sendPushNotification = async () => {
+    const message = {
+      to: state.expoPushToken,
+      sound: "default",
+      title: "Original Title",
+      body: "And here is the body!",
+      data: { data: "goes here 1" },
+      _displayInForeground: true,
+    };
+    const response = await fetch("https://exp.host/--/api/v2/push/send", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Accept-encoding": "gzip, deflate",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(message),
+    });
+  };
+
   return (
     <View
       style={{
-        marginTop: 100,
-        backgroundColor: "pink",
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "space-around",
       }}
     >
-      <View
-        style={{
-          flexDirection: "row",
-        }}
-      >
-        <View
-          style={{
-            height: 200,
-            backgroundColor: "blue",
-            flex: 0.5,
-          }}
-        ></View>
-        <View
-          style={{
-            backgroundColor: "white",
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <View
-            style={{
-              width: 100,
-              height: 100,
-              backgroundColor: "pink",
-              shadowColor: "#000",
-              shadowOffset: {
-                width: 20,
-                height: 10,
-              },
-              shadowOpacity: 0.25,
-              shadowRadius: 3.84,
-              elevation: 5,
-            }}
-          />
-        </View>
+      <View style={{ alignItems: "center", justifyContent: "center" }}>
+        <Text>Origin: {state.notification.origin}</Text>
+        <Text>Data: {JSON.stringify(state.notification.data)}</Text>
       </View>
-      <View style={{ flexDirection: "row" }}>
-        <Button
-          style={{ flex: 0.5 }}
-          onPress={() => {
-            navigation.navigate("Image Detail", { dung: "HANDAA" });
-          }}
-        >
-          <Text white>GO PHOTOHUB</Text>
-        </Button>
-      </View>
+      <Button
+        title={"Press to Send Notification"}
+        onPress={() => sendPushNotification()}
+      />
     </View>
   );
 };
 
 export default About;
 
-const styles = StyleSheet.create({});
+// const styles = StyleSheet.create({});

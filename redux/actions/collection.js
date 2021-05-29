@@ -6,7 +6,6 @@ import { Alert } from "react-native";
 export const getListCollection = () => {
   return async (dispatch) => {
     try {
-      console.log("HELLO");
       const response = await request.server.get(URL.GET_COLLECTION());
 
       const data = response.data;
@@ -14,6 +13,7 @@ export const getListCollection = () => {
       if (data.status == true) {
         dispatch(getListCollectionSuccess({ collections: data.collections }));
       } else {
+        throw Error(data.message);
       }
     } catch (error) {
       Alert.alert(
@@ -35,11 +35,13 @@ export const getListCollection = () => {
   };
 };
 
-export const createCollection = (input) => {
+export const createCollection = (input, images_snippet) => {
   return async (dispatch) => {
     try {
       const response = await request.server.post(URL.CREATE_COLLECTION(), {
         name: input,
+        images_snippet: images_snippet,
+        date_create: new Date(),
       });
 
       const data = response.data;
@@ -78,9 +80,17 @@ export const deleteCollection = (collection, success, fail) => {
   };
 };
 
-export const updateCollectionInfor = ({collection_id, inforUpdate}, success, fail) => {
+export const updateCollectionInfor = (
+  { collection_id, inforUpdate },
+  success,
+  fail
+) => {
   return async (dispatch) => {
-    console.log("INFOR", URL.UPDATE_COLLECTION_INFOR(collection_id), inforUpdate );
+    console.log(
+      "INFOR",
+      URL.UPDATE_COLLECTION_INFOR(collection_id),
+      inforUpdate
+    );
     try {
       const response = await request.server.put(
         URL.UPDATE_COLLECTION_INFOR(collection_id),
@@ -92,7 +102,7 @@ export const updateCollectionInfor = ({collection_id, inforUpdate}, success, fai
       const data = response.data;
 
       if (data.status == true) {
-        dispatch(updateCollectionInforSuccess({collection_id, inforUpdate}));
+        dispatch(updateCollectionInforSuccess({ collection_id, inforUpdate }));
         success(data);
       } else {
         throw new Error(data.message);
@@ -217,7 +227,10 @@ export const addImageToCollectionFail = (error) => ({
   },
 });
 
-export const updateCollectionInforSuccess = ({collection_id, inforUpdate}) => ({
+export const updateCollectionInforSuccess = ({
+  collection_id,
+  inforUpdate,
+}) => ({
   type: COLLECTION.UPDATE_COLLECTION_INFOR_SUCCESS,
   payload: {
     collection_id,

@@ -8,6 +8,7 @@ import CollectionDetail from "./CollectionDetail/CollectionDetail";
 import { FontAwesome, AntDesign } from "@expo/vector-icons";
 import ImageDetail from "./CollectionDetail/ImageDetail";
 import { color } from "../../utils/f";
+import CollectionQR from "./CollectionDetail/CollectionQR";
 
 const Stack = createStackNavigator();
 
@@ -73,6 +74,16 @@ const Collection = ({ navigation, style }) => {
           options={{
             title: "Collection",
             headerShown: true,
+            headerTintColor: "#6486d3",
+          }}
+        />
+        <Stack.Screen
+          name="Collection QR"
+          component={CollectionQR}
+          options={{
+            title: "Share Collection",
+            headerShown: true,
+            headerTransparent: true,
             headerTintColor: "#6486d3",
           }}
         />

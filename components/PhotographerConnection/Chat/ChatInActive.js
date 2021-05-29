@@ -6,15 +6,21 @@ import {
   StyleSheet,
   ImageBackground,
   Dimensions,
+  Image,
+  TouchableOpacity,
 } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import request from "../../../utils/axios";
 import { URL } from "../../../configs/end-points-url";
 import { color } from "../../../utils/f";
+import { useNavigation } from "@react-navigation/native";
 const window = Dimensions.get("window");
+import Spinner from "react-native-loading-spinner-overlay";
 const avatar_1 =
   "https://firebasestorage.googleapis.com/v0/b/photohub-e7e04.appspot.com/o/avatar%2Favatar_1.jpg?alt=media&token=3efbdede-a9ca-4bd6-95f3-9cd9383e6379";
 
 const ChatInActive = () => {
+  const navigation = useNavigation();
   const [listInActiveChat, setListInActiveChat] = useState([]);
   const [fetching, setFetching] = useState(false);
 
@@ -48,9 +54,11 @@ const ChatInActive = () => {
           style={styles.chatItem}
           onPress={() => {
             navigation.push("Chat", {
+              room_id: item.id,
               photographer: {
                 ...item.photographer,
               },
+              fromChat: true,
             });
           }}
         >
@@ -76,9 +84,26 @@ const ChatInActive = () => {
                   color: "white",
                 }}
               >
-                Information
+                Photography
               </Text>
             </View>
+
+            {/* <View style={styles.deleteChat}>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  alignItems: "flex-end",
+                  justifyContent: "center",
+                }}
+                onPress={() => deactivateChat(item)}
+              >
+                <MaterialCommunityIcons
+                  name="delete-outline"
+                  size={24}
+                  color="white"
+                ></MaterialCommunityIcons>
+              </TouchableOpacity>
+            </View> */}
           </View>
         </TouchableOpacity>
       </View>
@@ -87,15 +112,20 @@ const ChatInActive = () => {
 
   return (
     <ImageBackground
-      source={require("./../../../assets/images/background-1.png")}
+      source={require("./../../../assets/images/background-1.jpg")}
       resizeMode="cover"
       style={{
         flex: 1,
       }}
     >
+      <Spinner
+        visible={fetching}
+        textStyle={{ color: "black" }}
+        cancelable={true}
+        animation="fade"
+      />
       <FlatList
-        style={{ margin: 4 }}
-        numColumns={2}
+        style={{ marginHorizontal: 10, marginTop: 80 }}
         keyExtractor={(item) => item.id}
         data={listInActiveChat}
         renderItem={({ item }) => renderChatItem(item)}
@@ -133,5 +163,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginTop: 10,
     marginBottom: 5,
+  },
+  deleteChat: {
+    flex: 1,
   },
 });

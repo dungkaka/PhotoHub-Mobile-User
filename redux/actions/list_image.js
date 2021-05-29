@@ -2,11 +2,10 @@ import { GET_LIST_IMAGE } from "../../constant/constant";
 import request from "../../utils/axios";
 import * as axios from "axios";
 import { URL } from "../../configs/end-points-url";
+import { delay } from "../../utils/f";
 
 export const getListImage = (tags, after) => {
-  console.log("GO GET LIST IMAGE", after);
   return async (dispatch) => {
-    // dispatch(getListImageStart());
     try {
       const response = await axios.post(
         "https://photohub-e7e04.firebaseapp.com/api/v1/images/search/pagination",
@@ -17,18 +16,21 @@ export const getListImage = (tags, after) => {
           params: {
             after: after,
           },
+          cancelToken: new axios.CancelToken((cancel) =>
+            setTimeout(cancel, 8000)
+          ),
         }
       );
 
       const data = response.data;
 
-      if (data) {
-        dispatch(getListImageSuccess({ listImage: data, after: after }));
+      if (data?.status) {
+        dispatch(getListImageSuccess({ listImage: data.images, after: after }));
       } else {
-        throw new Error(data.errors);
+        throw new Error(data.message);
       }
     } catch (error) {
-      dispatch(getListImageFail(error));
+      dispatch(getListImageFail(error.message));
     }
   };
 };

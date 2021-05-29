@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
   },
   drawerStyles: { flex: 1, width: "50%", backgroundColor: "transparent" },
-  drawerItem: { alignItems: "flex-start", marginVertical: 0 },
+  drawerItem: { alignItems: "flex-start", marginVertical: 0, paddingStart: 10 },
   drawerLabel: {
     color: "white",
     fontSize: 16,

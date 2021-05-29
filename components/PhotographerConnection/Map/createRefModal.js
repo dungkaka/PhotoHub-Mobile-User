@@ -8,23 +8,23 @@ import React, {
 
 export const stickRef = (Component, method = "") => {
   return forwardRef((props, ref) => {
-    const modalRef = useRef();
+    const modalRef = useRef({ sheet: null });
     const [visible, setVisible] = useState(false);
 
     useImperativeHandle(ref, () => ({
       open() {
         if (method == "CLEAN_UP") return setVisible(true);
-        modalRef.current.open();
+        modalRef.current.sheet.open();
       },
       close() {
         if (method == "CLEAN_UP") return setVisible(false);
-        modalRef.current.close();
+        modalRef.current.sheet.close();
       },
     }));
 
-    console.log("RENDER LAI");
-
     if (method == "CLEAN_UP" && visible == false) return null;
-    return <Component {...props} ref={modalRef} />;
+    return (
+      <Component {...props} ref={(ref) => (modalRef.current.sheet = ref)} />
+    );
   });
 };

@@ -1,11 +1,19 @@
 import React from "react";
-import { StyleSheet, StatusBar } from "react-native";
+import { StyleSheet, StatusBar, View } from "react-native";
 import AppContainer from "./navigation/index";
 import { Provider } from "react-redux";
 import store from "./redux/store/store";
+import { decode, encode } from "base-64";
+
+if (!global.btoa) {
+  global.btoa = encode;
+}
+
+if (!global.atob) {
+  global.atob = decode;
+}
 
 export default function App() {
-  console.log("START APP");
   return (
     <Provider store={store}>
       <StatusBar

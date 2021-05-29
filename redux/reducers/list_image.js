@@ -10,7 +10,6 @@ const initState = () => {
 
 export default (state = initState(), { type, payload }) => {
   switch (type) {
-
     case GET_LIST_IMAGE.GET_LIST_IMAGE_SUCCESS:
       const { listImage, after } = payload;
       // Case after == "" that mean start app, refresh

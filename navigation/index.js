@@ -12,19 +12,19 @@ import { URL } from "./../configs/end-points-url";
 import { setUser, setUserFromAsyncStorage } from "./../redux/actions/user";
 import SpashScreen from "./../components/Common/SplashScreen/index";
 import { useDidMountEffect } from "./../utils/custom-hook";
+import { listenChatNotification } from "../utils/notification";
 
 const Stack = createStackNavigator();
 
-const AppContainer = () => {
+const AppContainer =  () => {
   const login = useSelector((store) => store.login);
+  const dispatch = useDispatch();
 
   const [state, setState] = useState({
     userToken: null,
     isLoading: true,
     error: "",
   });
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     isLogin();
@@ -38,12 +38,13 @@ const AppContainer = () => {
       setTimeout(() => setState({ ...state, isLoading: false }), 2500);
     }
   }, [login.status]);
-  console.log("RENDER LAI NE");
 
   const isLogin = async () => {
     let userToken = null;
 
-    // Check user from Async Storage, If user exist, setToken. Else, do nothing, directly go app.
+    // Check userToken from Async Storage.
+    // If userToken exist, temporary set userAsync to store and check userToken from server.
+    // Else, do nothing, directly go app.
     try {
       userToken = await AsyncStorage.getItem("userToken");
     } catch (e) {
@@ -55,9 +56,12 @@ const AppContainer = () => {
       return;
     }
 
+    dispatch(setUserFromAsyncStorage());
+    listenChatNotification();
+
     // Create new axios request. getUser and save store
     request.server = axios.create({
-      // timeout: 5,
+      timeout: 100,
       headers: {
         Authorization: "Bearer " + userToken,
         "Content-Type": "application/json",
@@ -77,12 +81,10 @@ const AppContainer = () => {
           2500
         );
       } else {
-        throw new Error("Can not retriev user !");
+        throw new Error("Can not retrieve user !");
       }
     } catch (error) {
       // If error by Network, userToken is wrong, return to App Container
-      // and dispatch User Information from AsyncStore to store
-      dispatch(setUserFromAsyncStorage());
       setTimeout(() => {
         setState({ ...state, isLoading: false, userToken: null });
       }, 2500);

@@ -19,9 +19,9 @@ import { useDidMountEffect, useGoBackHandler } from "./../../utils/custom-hook";
 import Spinner from "react-native-loading-spinner-overlay";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { rainBowGradient } from "./../../utils/gradient";
+import { rainBowGradient, gradient } from "./../../utils/gradient";
 
-const { width: WIDTH } = Dimensions.get("window");
+const { width: WIDTH, height: HEIGHT } = Dimensions.get("window");
 
 const Login = (props) => {
   const dispatch = useDispatch();
@@ -43,7 +43,7 @@ const Login = (props) => {
         routes: [{ name: "App" }],
       });
     }
-    if (loginState.error) {
+    if (loginState.error !== null) {
       Alert.alert(
         "Alert",
         loginState.error,
@@ -64,7 +64,7 @@ const Login = (props) => {
 
   return (
     <ImageBackground
-      source={require("./../../assets/images/background-4.png")}
+      source={require("./../../assets/images/background-1.jpg")}
       style={{
         flex: 1,
         justifyContent: "center",
@@ -81,9 +81,9 @@ const Login = (props) => {
 
       <View style={{ alignItems: "center" }}>
         <Image
-          source={require("./../../assets/images/logo-4.png")}
+          source={require("./../../assets/images/logo-back.png")}
           resizeMode="center"
-          style={{ width: WIDTH * 0.6 }}
+          style={{ width: WIDTH * 0.8, maxHeight: HEIGHT * 0.3 }}
         ></Image>
       </View>
 
@@ -124,7 +124,7 @@ const Login = (props) => {
           }}
         >
           <LinearGradient
-            colors={rainBowGradient.red}
+            colors={gradient.blue_purple}
             start={[0, 0]}
             end={[1, 1]}
             style={styles.btnLogin}
@@ -138,27 +138,46 @@ const Login = (props) => {
           </LinearGradient>
         </TouchableOpacity>
 
-        <View style={{ flexDirection: "row" }}>
+        <View
+          style={{
+            marginTop: HEIGHT * 0.06,
+            marginBottom: HEIGHT * 0.01,
+            height: 1,
+            marginHorizontal: WIDTH * 0.05,
+            width: WIDTH * 0.7,
+            backgroundColor: "rgba(255,255,255,0.2)",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        />
+
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <TouchableOpacity
-            style={{ flex: 1 }}
+            style={styles.btnGoHome}
             onPress={() => {
               props.navigation.goBack();
             }}
           >
-            <LinearGradient
+            {/* <LinearGradient
               style={styles.btnGoHome}
               colors={rainBowGradient.green}
               start={[0, 0]}
               end={[1, 1]}
-            >
-              <AntDesign
-                name="arrowleft"
-                size={24}
-                style={{ color: "white" }}
-              ></AntDesign>
-
-              <Text style={styles.textGoHome}> BACK </Text>
-            </LinearGradient>
+            > */}
+            <AntDesign
+              name="home"
+              size={24}
+              style={{ color: "white" }}
+            ></AntDesign>
+            {/* 
+            <Text style={styles.textGoHome}> BACK </Text> */}
+            {/* </LinearGradient> */}
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.btnSignup}
@@ -166,7 +185,7 @@ const Login = (props) => {
               props.navigation.navigate("Signup");
             }}
           >
-            <Text style={styles.textSignup}> SIGNUP </Text>
+            <Text style={styles.textSignup}> Register </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -181,11 +200,13 @@ const styles = StyleSheet.create({
     width: WIDTH * 0.8,
     marginVertical: 5,
     paddingVertical: 10,
-    backgroundColor: `rgba(255,255,255,0.6)`,
+    backgroundColor: `rgba(255,255,255,0.65)`,
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
     borderRadius: 25,
+    borderWidth: 1,
+    borderColor: color.blueModern2,
   },
   input: {
     flex: 1,
@@ -201,7 +222,6 @@ const styles = StyleSheet.create({
   btnLogin: {
     borderRadius: 25,
     flexDirection: "row",
-    backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 5,
@@ -220,30 +240,32 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   btnSignup: {
-    flex: 1,
+    height: 50,
     marginLeft: 5,
-    borderRadius: 25,
+    borderRadius: 30,
     backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 10,
     paddingVertical: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
     shadowRadius: 5,
     shadowColor: "black",
     shadowOpacity: 1,
   },
   textSignup: {
-    fontSize: 20,
-    color: color.greenBlue,
-    fontWeight: "bold",
+    fontSize: 18,
+    fontStyle: "italic",
+    color: color.blueModern1,
+    // fontWeight: "bold",
   },
   btnGoHome: {
-    flex: 1,
+    height: 50,
+    width: 50,
     flexDirection: "row",
     marginRight: 5,
-    borderRadius: 25,
-    backgroundColor: color.greenBlue,
+    borderRadius: 30,
+    backgroundColor: gradient.blue_purple[0],
     justifyContent: "center",
     alignItems: "center",
     marginTop: 10,

@@ -1,0 +1,157 @@
+Date : 2020-06-26 00:05:44
+Directory : d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User
+Total : 100 files,  8180 codes, 247 comments, 885 blanks, all 9312 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| JavaScript |         96 |      7,641 |        224 |        772 |      8,637 |
+| Markdown   |          1 |        464 |          0 |        112 |        576 |
+| JSON       |          3 |         75 |         23 |          1 |         99 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++--------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                     | files      | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                        |        100 |      8,180 |        247 |        885 |      9,312 |
+| .expo-shared                                                                                                             |          1 |          4 |          0 |          0 |          4 |
+| components                                                                                                               |         68 |      6,012 |        163 |        523 |      6,698 |
+| components\About                                                                                                         |          1 |         95 |          1 |         10 |        106 |
+| components\Auth                                                                                                          |          5 |        798 |         20 |         49 |        867 |
+| components\Collection                                                                                                    |         15 |        980 |         33 |         89 |      1,102 |
+| components\Collection\CollectionDetail                                                                                   |          8 |        513 |         10 |         48 |        571 |
+| components\Collection\MyCollection                                                                                       |          5 |        364 |          3 |         34 |        401 |
+| components\Common                                                                                                        |          5 |        173 |          0 |         25 |        198 |
+| components\Common\CustomAlert                                                                                            |          1 |         21 |          0 |          3 |         24 |
+| components\Common\FormikCustom                                                                                           |          1 |         31 |          0 |          5 |         36 |
+| components\Common\LinearGradient                                                                                         |          1 |         19 |          0 |          5 |         24 |
+| components\Common\ReloadPage                                                                                             |          1 |         51 |          0 |          6 |         57 |
+| components\Common\SplashScreen                                                                                           |          1 |         51 |          0 |          6 |         57 |
+| components\PhotoHub                                                                                                      |         16 |      1,001 |         18 |        107 |      1,126 |
+| components\PhotoHub\Hub                                                                                                  |          6 |        422 |          8 |         46 |        476 |
+| components\PhotoHub\ImageDetail                                                                                          |          8 |        505 |          8 |         54 |        567 |
+| components\PhotographerConnection                                                                                        |         21 |      2,525 |         91 |        210 |      2,826 |
+| components\PhotographerConnection\Chat                                                                                   |          5 |        691 |          3 |         47 |        741 |
+| components\PhotographerConnection\Home                                                                                   |          3 |        188 |         20 |         24 |        232 |
+| components\PhotographerConnection\Map                                                                                    |          8 |      1,192 |         42 |        102 |      1,336 |
+| components\PhotographerConnection\Search                                                                                 |          3 |        248 |         23 |         28 |        299 |
+| components\QRCode                                                                                                        |          5 |        440 |          0 |         33 |        473 |
+| components\QRCode\Collection                                                                                             |          4 |        361 |          0 |         27 |        388 |
+| configs                                                                                                                  |          3 |         89 |          2 |         24 |        115 |
+| constant                                                                                                                 |          1 |         24 |          0 |          3 |         27 |
+| navigation                                                                                                               |          5 |        458 |         13 |         43 |        514 |
+| redux                                                                                                                    |         10 |        646 |         32 |        100 |        778 |
+| redux\actions                                                                                                            |          4 |        403 |          0 |         56 |        459 |
+| redux\reducers                                                                                                           |          5 |        236 |         31 |         40 |        307 |
+| redux\store                                                                                                              |          1 |          7 |          1 |          4 |         12 |
+| utils                                                                                                                    |          7 |        373 |         14 |         73 |        460 |
++--------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++--------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                                                 | language   | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\.expo-shared\assets.json                                             | JSON       |          4 |          0 |          0 |          4 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\API.md                                                               | Markdown   |        464 |          0 |        112 |        576 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\App.js                                                               | JavaScript |         33 |          0 |          5 |         38 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\app.json                                                             | JSON       |         14 |         23 |          0 |         37 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\babel.config.js                                                      | JavaScript |          6 |          0 |          1 |          7 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\About\index.js                                            | JavaScript |         95 |          1 |         10 |        106 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Auth\Login.js                                             | JavaScript |        261 |          6 |         17 |        284 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Auth\Signup.js                                            | JavaScript |        216 |         13 |         15 |        244 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Auth\SignupForm.js                                        | JavaScript |        302 |          1 |         12 |        315 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Auth\index.js                                             | JavaScript |         19 |          0 |          4 |         23 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Auth\index.style.js                                       | JavaScript |          0 |          0 |          1 |          1 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Collection\CollectionDetail\AddToCollectionButton.js      | JavaScript |         39 |          0 |          7 |         46 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Collection\CollectionDetail\CollectionDetail.js           | JavaScript |        160 |          4 |         11 |        175 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Collection\CollectionDetail\CollectionQR.js               | JavaScript |         29 |          0 |          5 |         34 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Collection\CollectionDetail\ImageDetail.js                | JavaScript |        115 |          6 |          7 |        128 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Collection\CollectionDetail\ImageThumbnail.js             | JavaScript |         28 |          0 |          4 |         32 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Collection\CollectionDetail\ModalUpdateCollectionInfor.js | JavaScript |        126 |          0 |          8 |        134 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Collection\CollectionDetail\index.js                      | JavaScript |          7 |          0 |          3 |         10 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Collection\CollectionDetail\index.style.js                | JavaScript |          9 |          0 |          3 |         12 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Collection\MyCollection\CollectionThumnail.js             | JavaScript |         51 |          0 |          6 |         57 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Collection\MyCollection\ModalAddCollection.js             | JavaScript |        139 |          2 |         10 |        151 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Collection\MyCollection\MyCollectionCotainer.js           | JavaScript |        127 |          1 |         12 |        140 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Collection\MyCollection\index.js                          | JavaScript |          7 |          0 |          3 |         10 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Collection\MyCollection\index.style.js                    | JavaScript |         40 |          0 |          3 |         43 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Collection\index.js                                       | JavaScript |         87 |         18 |          4 |        109 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Collection\index.style.js                                 | JavaScript |         16 |          2 |          3 |         21 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Common\CustomAlert\index.js                               | JavaScript |         21 |          0 |          3 |         24 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Common\FormikCustom\FormikWithRef.js                      | JavaScript |         31 |          0 |          5 |         36 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Common\LinearGradient\index.js                            | JavaScript |         19 |          0 |          5 |         24 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Common\ReloadPage\index.js                                | JavaScript |         51 |          0 |          6 |         57 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\Common\SplashScreen\index.js                              | JavaScript |         51 |          0 |          6 |         57 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotoHub\Hub\HubContainer.js                              | JavaScript |        171 |          6 |         19 |        196 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotoHub\Hub\ImageThumbnail.js                            | JavaScript |         43 |          0 |          4 |         47 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotoHub\Hub\Tag.js                                       | JavaScript |         33 |          0 |          6 |         39 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotoHub\Hub\TagSelector.js                               | JavaScript |        105 |          2 |         10 |        117 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotoHub\Hub\index.js                                     | JavaScript |         30 |          0 |          5 |         35 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotoHub\Hub\index.style.js                               | JavaScript |         40 |          0 |          2 |         42 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotoHub\ImageDetail\AddToCollection.js                   | JavaScript |        161 |          7 |         15 |        183 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotoHub\ImageDetail\AddToCollectionButton.js             | JavaScript |         30 |          0 |          6 |         36 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotoHub\ImageDetail\ImageDetail.js                       | JavaScript |        109 |          1 |         11 |        121 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotoHub\ImageDetail\ImageZoom.js                         | JavaScript |         26 |          0 |          4 |         30 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotoHub\ImageDetail\LikeImage.js                         | JavaScript |         53 |          0 |          8 |         61 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotoHub\ImageDetail\SimilarItem.js                       | JavaScript |         33 |          0 |          4 |         37 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotoHub\ImageDetail\index.js                             | JavaScript |         11 |          0 |          3 |         14 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotoHub\ImageDetail\style.index.js                       | JavaScript |         82 |          0 |          3 |         85 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotoHub\index.js                                         | JavaScript |         57 |          0 |          4 |         61 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotoHub\index.style.js                                   | JavaScript |         17 |          2 |          3 |         22 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotographerConnection\Chat\Chat.js                       | JavaScript |        428 |          3 |         22 |        453 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotographerConnection\Chat\ChatActive.js                 | JavaScript |        129 |          0 |         10 |        139 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotographerConnection\Chat\ChatInActive.js               | JavaScript |        127 |          0 |         11 |        138 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotographerConnection\Chat\index.js                      | JavaScript |          7 |          0 |          3 |         10 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotographerConnection\Chat\insex.style.js                | JavaScript |          0 |          0 |          1 |          1 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotographerConnection\Home\Home.js                       | JavaScript |        181 |         20 |         20 |        221 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotographerConnection\Home\index.js                      | JavaScript |          7 |          0 |          3 |         10 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotographerConnection\Home\index.style.js                | JavaScript |          0 |          0 |          1 |          1 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotographerConnection\Map\MapScreen.js                   | JavaScript |        436 |         31 |         47 |        514 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotographerConnection\Map\ModalResult.js                 | JavaScript |        294 |          1 |         15 |        310 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotographerConnection\Map\ModalSearch.js                 | JavaScript |        171 |          1 |          9 |        181 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotographerConnection\Map\ModalSearchBySelect.js         | JavaScript |        140 |          9 |         12 |        161 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotographerConnection\Map\ModelLoading.js                | JavaScript |         90 |          0 |          9 |         99 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotographerConnection\Map\createRefModal.js              | JavaScript |         27 |          0 |          4 |         31 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotographerConnection\Map\index.js                       | JavaScript |          7 |          0 |          3 |         10 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotographerConnection\Map\index.styles.js                | JavaScript |         27 |          0 |          3 |         30 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotographerConnection\Search\Search.js                   | JavaScript |        214 |         23 |         22 |        259 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotographerConnection\Search\index.js                    | JavaScript |          7 |          0 |          3 |         10 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotographerConnection\Search\index.style.js              | JavaScript |         27 |          0 |          3 |         30 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotographerConnection\index.js                           | JavaScript |        190 |          1 |          6 |        197 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\PhotographerConnection\index.styles.js                    | JavaScript |         16 |          2 |          3 |         21 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\QRCode\Collection\CollectionDetail.js                     | JavaScript |        132 |          0 |          8 |        140 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\QRCode\Collection\ImageThumbnai.js                        | JavaScript |         32 |          0 |          5 |         37 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\QRCode\Collection\ImageZoom.js                            | JavaScript |         26 |          0 |          4 |         30 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\QRCode\Collection\index.js                                | JavaScript |        171 |          0 |         10 |        181 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\components\QRCode\index.js                                           | JavaScript |         79 |          0 |          6 |         85 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\configs\end-points-url.js                                            | JavaScript |         69 |          1 |         17 |         87 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\configs\firebase-config.js                                           | JavaScript |         13 |          1 |          3 |         17 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\configs\placeAPI.js                                                  | JavaScript |          7 |          0 |          4 |         11 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\constant\constant.js                                                 | JavaScript |         24 |          0 |          3 |         27 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\navigation\AppNavigation.js                                          | JavaScript |         75 |          4 |          8 |         87 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\navigation\AuthNavigation.js                                         | JavaScript |          2 |          0 |          1 |          3 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\navigation\DrawerContent.js                                          | JavaScript |        268 |          1 |         16 |        285 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\navigation\index.js                                                  | JavaScript |         84 |          6 |         15 |        105 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\navigation\index.style.js                                            | JavaScript |         29 |          2 |          3 |         34 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\package.json                                                         | JSON       |         57 |          0 |          1 |         58 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\redux\actions\collection.js                                          | JavaScript |        254 |          0 |         35 |        289 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\redux\actions\list_image.js                                          | JavaScript |         46 |          0 |          6 |         52 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\redux\actions\login.js                                               | JavaScript |         60 |          0 |          9 |         69 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\redux\actions\user.js                                                | JavaScript |         43 |          0 |          6 |         49 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\redux\reducers\collection.js                                         | JavaScript |         98 |         27 |         22 |        147 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\redux\reducers\list_image.js                                         | JavaScript |         51 |          4 |          5 |         60 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\redux\reducers\login.js                                              | JavaScript |         32 |          0 |          6 |         38 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\redux\reducers\root-reducer.js                                       | JavaScript |         31 |          0 |          4 |         35 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\redux\reducers\user.js                                               | JavaScript |         24 |          0 |          3 |         27 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\redux\store\store.js                                                 | JavaScript |          7 |          1 |          4 |         12 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\utils\axios.js                                                       | JavaScript |         26 |          0 |          5 |         31 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\utils\custom-hook.js                                                 | JavaScript |         30 |          3 |          8 |         41 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\utils\decode-polyline.js                                             | JavaScript |        147 |         10 |         31 |        188 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\utils\f.js                                                           | JavaScript |         67 |          0 |         15 |         82 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\utils\gradient.js                                                    | JavaScript |         50 |          0 |          7 |         57 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\utils\map.js                                                         | JavaScript |         20 |          1 |          2 |         23 |
+| d:\Code_Project\00_DoAn\PhotoHub-User\PhotoHub-User\utils\notification.js                                                | JavaScript |         33 |          0 |          5 |         38 |
+| Total                                                                                                                    |            |      8,180 |        247 |        885 |      9,312 |
++--------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

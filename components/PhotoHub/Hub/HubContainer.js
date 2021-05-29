@@ -8,14 +8,15 @@ import {
   TouchableOpacity,
   Image,
   ActivityIndicator,
+  StatusBar,
 } from "react-native";
-import { styles } from "./index.style";
 import { useDispatch, useSelector } from "react-redux";
 import { getListImage } from "../../../redux/actions/list_image";
 import ImageThumbnail from "./ImageThumbnail";
 import { useHeaderHeight } from "@react-navigation/stack";
 import { FontAwesome, AntDesign } from "@expo/vector-icons";
 import { color } from "../../../utils/f";
+import ReloadPage from "../../Common/ReloadPage";
 
 const background = require("./../../../assets/images/logo-2.png");
 
@@ -28,10 +29,12 @@ const LoadingIcon = ({ isIconAnimating }) => (
   />
 );
 
-const HubContainer = ({ route }) => {
+const HubContainer = ({ drawerAppNavigation, route }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const headerHeight = useHeaderHeight();
+
+  const imageList = useSelector((store) => store.listImage);
 
   const { listImage, pageIndex, error } = useSelector(
     (store) => store.listImage
@@ -47,6 +50,7 @@ const HubContainer = ({ route }) => {
 
   // Case Tags selector
   useDidMountEffect(() => {
+    console.log("PARAMS", route.params);
     const routeTags = route.params ? route.params.tags : [];
     if (routeTags) {
       tags.current = routeTags;
@@ -58,7 +62,7 @@ const HubContainer = ({ route }) => {
   useDidMountEffect(() => {
     if (fetching) setFetching(false);
     if (fetchingMore) setFetchingMore(false);
-  }, [listImage]);
+  }, [imageList]);
 
   // Case Tags change
   const handleTagsChange = () => {
@@ -73,7 +77,6 @@ const HubContainer = ({ route }) => {
 
   // Fetch more data append to List
   const fetchMore = () => {
-    console.log("FETCH_MORE");
     if (!fetching && !fetchingMore && pageIndex > 0) {
       setFetchingMore(true);
       const afterID = listImage[listImage.length - 1].id;
@@ -89,28 +92,78 @@ const HubContainer = ({ route }) => {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "flex-start",
-          margin: 20,
+          marginTop: StatusBar.currentHeight,
         }}
       >
-        <FontAwesome
-          name="bars"
-          size={28}
-          onPress={() => navigation.openDrawer()}
-          color={color.blueModern1}
-          style={{}}
-        />
-        <Image
-          source={background}
-          style={{ height: 35, width: "60%" }}
-          resizeMode="center"
-        />
+        <TouchableOpacity
+          style={{ paddingHorizontal: 20 }}
+          onPress={() => {
+            drawerAppNavigation.openDrawer();
+          }}
+        >
+          <AntDesign name="menufold" size={26} color={color.blueModern1} />
+        </TouchableOpacity>
+
+        <View
+          style={{ flex: 1, flexDirection: "row", justifyContent: "flex-end" }}
+        >
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
+              paddingEnd: 20,
+            }}
+          >
+            <Image
+              source={background}
+              style={{
+                maxHeight: 35,
+                width: "auto",
+                aspectRatio: 1,
+              }}
+              resizeMode="contain"
+            />
+          </View>
+          {tags.current.length == 0 ? null : (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.setParams({
+                  tags: [],
+                  fromCategory: false,
+                  fromTagSelector: false,
+                });
+              }}
+              style={{ justifyContent: "center" }}
+            >
+              <Text
+                style={{
+                  marginHorizontal: 8,
+                  backgroundColor: color.blueModernDark,
+                  paddingHorizontal: 10,
+                  paddingVertical: 5,
+                  fontSize: 14,
+                  fontWeight: "bold",
+                  color: "white",
+                  borderRadius: 10,
+                  textAlignVertical: "center",
+                }}
+              >
+                RESET
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
 
       {/* Filter */}
 
       <View
         style={{
-          margin: 8,
+          marginHorizontal: 10,
+          marginBottom: 6,
+          marginTop: 14,
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "flex-start",
@@ -124,7 +177,55 @@ const HubContainer = ({ route }) => {
             alignItems: "center",
           }}
         >
-          <Text>Suggestion:</Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Category")}
+            style={{
+              justifyContent: "center",
+              backgroundColor: color.blueModernDark,
+              paddingHorizontal: 15,
+              paddingVertical: 4,
+              borderRadius: 10,
+            }}
+          >
+            <Text
+              style={{
+                textAlignVertical: "center",
+                fontSize: 14,
+                fontWeight: "bold",
+                color: "white",
+              }}
+            >
+              CATEGORY
+            </Text>
+          </TouchableOpacity>
+          <View
+            style={{
+              justifyContent: "center",
+              backgroundColor: color.redOrange,
+              paddingHorizontal: 15,
+              paddingVertical: 4,
+              borderRadius: 10,
+              marginLeft: 5,
+            }}
+          >
+            <Text
+              style={{
+                textAlignVertical: "center",
+                fontSize: 14,
+                fontWeight: "bold",
+                color: "white",
+                textTransform: "capitalize",
+              }}
+            >
+              {route.params
+                ? route.params.fromCategory
+                  ? route.params.tags[0]
+                  : route.params.fromTagSelector
+                  ? "Poses from filter"
+                  : "All Poses"
+                : "All Poses"}
+            </Text>
+          </View>
         </View>
 
         <TouchableOpacity
@@ -136,38 +237,50 @@ const HubContainer = ({ route }) => {
           }}
           onPress={() => navigation.openDrawer()}
         >
-          <Text style={{ color: "steelblue", marginHorizontal: 1 }}>
+          <Text style={{ color: color.blueModernDark, marginHorizontal: 1 }}>
             {" "}
             Filter{" "}
           </Text>
-          <FontAwesome name="filter" size={22} color="steelblue"></FontAwesome>
+          <FontAwesome
+            name="filter"
+            size={22}
+            color={color.blueModernDark}
+          ></FontAwesome>
         </TouchableOpacity>
       </View>
 
-      <FlatList
-        style={{ margin: 4 }}
-        numColumns={2}
-        keyExtractor={(item) => item.id.toString()}
-        data={listImage}
-        renderItem={({ item }) => (
-          <ImageThumbnail
-            image={item}
-            width={200}
-            height={200}
-            spaceBetween={5}
-          ></ImageThumbnail>
-        )}
-        onRefresh={handleRefresh}
-        refreshing={fetching}
-        // extraData={fetching}
-        onEndReached={fetchMore}
-        onEndReachedThreshold={5}
-        ListFooterComponent={() =>
-          fetchingMore ? (
-            <LoadingIcon isIconAnimating={true}></LoadingIcon>
-          ) : null
-        }
-      />
+      {error ? (
+        <ReloadPage
+          onReload={handleRefresh}
+          error={error}
+          exLoading={fetching}
+        />
+      ) : (
+        <FlatList
+          style={{ margin: 4, marginBottom: 0 }}
+          numColumns={2}
+          keyExtractor={(item) => item.id.toString()}
+          data={listImage}
+          renderItem={({ item }) => (
+            <ImageThumbnail
+              image={item}
+              width={200}
+              height={200}
+              spaceBetween={5}
+            ></ImageThumbnail>
+          )}
+          onRefresh={handleRefresh}
+          refreshing={fetching}
+          // extraData={fetching}
+          onEndReached={fetchMore}
+          onEndReachedThreshold={5}
+          ListFooterComponent={() =>
+            fetchingMore && !fetching ? (
+              <LoadingIcon isIconAnimating={true}></LoadingIcon>
+            ) : null
+          }
+        />
+      )}
     </View>
   );
 };

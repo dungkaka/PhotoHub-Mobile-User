@@ -1,6 +1,7 @@
 import { random_item } from "./f";
 
 export const gradient = {
+  blue_purple: ["#74ceff", "#6b69ff"],
   warm_flame: ["#ff9a9e", "#fad0c4"],
   juicy_peach: ["#ffecd2", "#fcb69f"],
   lady_lips: ["#ff9a9e", "#fecfef"],

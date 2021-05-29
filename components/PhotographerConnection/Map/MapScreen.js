@@ -7,7 +7,8 @@ import {
   Dimensions,
   KeyboardAvoidingView,
 } from "react-native";
-import MapView, { Marker, Polyline } from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
+import Polyline from "@mapbox/polyline";
 import { useDidMountEffect } from "./../../../utils/custom-hook";
 import * as Permissions from "expo-permissions";
 import * as Location from "expo-location";
@@ -15,7 +16,7 @@ import ModalSearch from "./ModalSearch";
 import ModalResult from "./ModalResult";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { delay } from "../../../utils/f";
-import { hereKeyAPI } from "../../../configs/placeAPI";
+import { hereKeyAPI, directionKey } from "../../../configs/placeAPI";
 import axios from "axios";
 import request from "./../../../utils/axios";
 import { URL } from "./../../../configs/end-points-url";
@@ -23,6 +24,9 @@ import ModalLoading from "./ModelLoading";
 import ModalSearchbySelect from "./ModalSearchBySelect";
 import { ScrollView } from "react-native-gesture-handler";
 import { haversine_distance } from "./../../../utils/map";
+import { decode } from "./../../../utils/decode-polyline";
+import { color } from "./../../../utils/f";
+import customAlert from "./../../Common/CustomAlert/index";
 const window = Dimensions.get("window");
 
 const photographer = (
@@ -64,15 +68,19 @@ const MapScreen = () => {
   const [labelSearch, setLabelSearch] = useState(false);
   const [locationSearch, setLocationSearch] = useState(null);
   const [nears, setNears] = useState([]);
-  // const [repaint, setRepaint] = useState(false);
-  // const [mapLoaded, setMapLoaded] = useState(true);
-  // const [searching, setSearching] = useState(false);
+  const [tempDirection, setTempDirection] = useState({ coords: [] });
 
   const [switchLocationSearch, setSwitchLocationSearch] = useState(false);
   const modalSearchRef = useRef();
   const modalSearchingRef = useRef();
   const modalSearchBySelectRef = useRef();
   const modalResult = useRef();
+  const askedPermission = useRef();
+  const currentPosition = useRef();
+
+  useEffect(() => {
+    modalSearchRef.current.open();
+  }, []);
 
   useEffect(() => {
     const { type, payload } = route.params ? route.params : {};
@@ -89,15 +97,18 @@ const MapScreen = () => {
   }, [route]);
 
   useDidMountEffect(() => {
-    setTimeout(() => fitNears(nears), 1000);
-    if (locationSearch != null) {
+    if (locationSearch) {
+      setTimeout(() => fitNears(locationSearch), 1000);
       if (nears.length == 0)
         goToRegion({
           ...regionRef.current,
           longitudeDelta: 0.05,
           latitudeDelta: 0.05,
         });
-      else goToRegion(regionRef.current, () => setSwitchLocationSearch(true));
+      else
+        goToRegion({ ...regionRef.current, ...locationSearch }, () =>
+          setSwitchLocationSearch(true)
+        );
     }
   }, [nears, locationSearch]);
 
@@ -107,7 +118,7 @@ const MapScreen = () => {
       if (callback) {
         callback();
       }
-    }, 1200);
+    }, 1000);
   });
 
   const searchAdressByLocation = useCallback(async (location) => {
@@ -136,77 +147,122 @@ const MapScreen = () => {
 
         setLabelSearch(labelLocation);
       })
-      .catch((error) => console.log(error));
+      .catch((error) =>
+        setLabelSearch(
+          "Can not display places now! Try again to display adrress"
+        )
+      );
   });
 
   // 1. Handle search By Click on Search Your Location
   const searchMyLocation = useCallback(async () => {
-    modalSearchRef.current.close();
-    modalSearchingRef.current.open();
-    const location = await askPermision("ASK");
-    searchAdressByLocation(location);
-    searchNears(location);
+    try {
+      modalSearchRef.current.close();
+      modalSearchingRef.current.open();
+      const location = await askPermision("ASK");
+      searchAdressByLocation(location);
+      await searchNears(location);
+    } catch (error) {
+      customAlert(
+        error.message,
+        () => reset(),
+        () => reset()
+      );
+    }
   });
 
   // 2. Handle Search Via map
   const handleSearchViaMap = useCallback(async () => {
-    modalSearchBySelectRef.current.close();
-    modalSearchingRef.current.open();
-    searchAdressByLocation(regionRef.current);
-    searchNears(regionRef.current);
-    await delay(200);
+    try {
+      modalSearchBySelectRef.current.close();
+      modalSearchingRef.current.open();
+      searchAdressByLocation(regionRef.current);
+      await searchNears(regionRef.current);
+    } catch (error) {
+      customAlert(
+        error.message,
+        () => reset(),
+        () => reset()
+      );
+    }
   });
 
   // 3. Handle Search By Address. From type search address screen.
   const handleSearchByAddress = useCallback(async (payload) => {
-    modalSearchRef.current.close();
-    modalSearchingRef.current.open();
-    setLabelSearch(payload.labelLocation);
+    try {
+      modalSearchRef.current.close();
+      modalSearchingRef.current.open();
+      setLabelSearch(payload.labelLocation);
 
-    const data = await searchLocation(payload.location);
-    searchNears(data);
+      const data = await searchLocation(payload.location);
+      await searchNears(data);
+    } catch (error) {
+      customAlert(
+        error.message,
+        () => reset(),
+        () => reset()
+      );
+    }
   });
 
   // For handle Search By Address. Need to retrieve location of address to display new region
   const searchLocation = useCallback(async (location) => {
-    const locationId = location.locationId;
-    const searchUrl =
-      "https://geocoder.ls.hereapi.com/6.2/geocode.json?locationid=" +
-      locationId +
-      "&jsonattributes=1&gen=9&apiKey=" +
-      hereKeyAPI;
-    const response = await axios.get(searchUrl);
-    const data =
-      response.data.response.view[0].result[0].location.displayPosition;
+    try {
+      const locationId = location.locationId;
+      const searchUrl =
+        "https://geocoder.ls.hereapi.com/6.2/geocode.json?locationid=" +
+        locationId +
+        "&jsonattributes=1&gen=9&apiKey=" +
+        hereKeyAPI;
+      const response = await axios.get(searchUrl);
+      const data =
+        response.data.response.view[0].result[0].location.displayPosition;
 
-    regionRef.current = { ...regionRef.current, ...data };
-    return data;
+      regionRef.current = { ...regionRef.current, ...data };
+      return data;
+    } catch (error) {
+      throw new Error("Can not retriev location now! Try again");
+    }
   });
 
   const searchNears = useCallback(async (coords) => {
-    console.log("COORD", coords);
-    const response = await request.server.post(URL.SEARCH_NEARBY(), {
-      coords: {
-        latitude: coords.latitude,
-        longitude: coords.longitude,
-      },
-    });
+    try {
+      const response = await request.server.post(
+        URL.SEARCH_NEARBY(),
+        {
+          coords: {
+            latitude: coords.latitude,
+            longitude: coords.longitude,
+          },
+        },
+        {
+          cancelToken: new axios.CancelToken((cancel) =>
+            setTimeout(cancel, 20000)
+          ),
+        }
+      );
 
-    const data = response.data;
+      const data = response.data;
 
-    if (data.status) {
-      const nears = [];
-      data.locations.forEach((location) => {
-        if (haversine_distance(location, coords) < 5) nears.push(location);
-      });
-      setLocationSearch(coords);
-      setNears(nears);
+      if (data.status) {
+        const nears = [];
+        data.locations.forEach((location) => {
+          if (haversine_distance(location, coords) < 5) nears.push(location);
+        });
+        setLocationSearch(coords);
+        setNears(nears);
+      } else {
+        throw new Error(data.message);
+      }
+
+      modalSearchBySelectRef.current.close();
+      modalSearchingRef.current.close();
+      await delay(100);
+      modalResult.current.open();
+    } catch (error) {
+      if (axios.isCancel(error)) throw new Error("Timeout, try again !");
+      throw new Error(error.message);
     }
-
-    modalSearchBySelectRef.current.close();
-    modalSearchingRef.current.close();
-    await delay(150);
-    modalResult.current.open();
   });
 
   const openSelectSearch = useCallback(async () => {
@@ -233,24 +289,39 @@ const MapScreen = () => {
     );
   });
 
-  const renderDirection = useCallback(() => {});
-
   const askPermision = useCallback(async (method = "GET") => {
     try {
-      let { status } = await Permissions.askAsync(Permissions.LOCATION);
-
-      if (status != "granted") {
-        console.log("Permission to access location was denied");
+      if (!askedPermission.current) {
+        await delay(400);
+        const { status: existingStatus } = await Permissions.getAsync(
+          Permissions.LOCATION
+        );
+        let finalStatus = existingStatus;
+        if (existingStatus !== "granted") {
+          const { status } = await Permissions.askAsync(
+            Permissions.NOTIFICATIONS
+          );
+          finalStatus = status;
+        }
+        if (finalStatus !== "granted") {
+          throw new Error("No permission to access LOCATION");
+        } else {
+          askedPermission.current = true;
+          currentPosition.current = await Location.getCurrentPositionAsync();
+        }
+      } else {
+        currentPosition.current = await Location.getLastKnownPositionAsync();
       }
-
-      let location = await Location.getCurrentPositionAsync();
-      regionRef.current = { ...regionRef.current, ...location.coords };
+      regionRef.current = {
+        ...regionRef.current,
+        ...currentPosition.current.coords,
+      };
 
       if (method == "GET")
-        goToRegion({ ...regionRef.current, ...location.coords });
-      return location.coords;
+        goToRegion({ ...regionRef.current, ...currentPosition.current.coords });
+      return currentPosition.current.coords;
     } catch (error) {
-      console.log(error);
+      throw new Error(error.message);
     }
   });
 
@@ -260,18 +331,20 @@ const MapScreen = () => {
   };
 
   const reset = useCallback(() => {
+    modalSearchingRef.current.close();
     modalResult.current.close();
     modalSearchBySelectRef.current.close();
     modalSearchRef.current.open();
 
     setSwitchLocationSearch(false);
     setLocationSearch(null);
-    setLabelSearch(false);
     setNears([]);
+    setLabelSearch(false);
+    setTempDirection({ coords: [] });
   });
 
-  const fitNears = useCallback(() => {
-    const { latitude, longitude } = regionRef.current;
+  const fitNears = useCallback((locationSearch) => {
+    const { latitude, longitude } = locationSearch;
     if (nears.length > 0) {
       const oppositeNears = [];
       for (const near of nears) {
@@ -294,6 +367,72 @@ const MapScreen = () => {
     }
   });
 
+  const getDirections = useCallback(async (start, des) => {
+    const hasStartAndEnd = start.latitude !== null && des.latitude !== null;
+
+    if (hasStartAndEnd) {
+      const concatStart = `${start.latitude},${start.longitude}`;
+      const concatEnd = `${des.latitude},${des.longitude}`;
+      _getDirections(concatStart, concatEnd);
+      mapRef.current.fitToCoordinates([start, des], {
+        edgePadding: {
+          top: window.height * 1.3 * 0.65,
+          right: 20,
+          left: 20,
+          bottom: window.height * 1.3 * 0.65,
+        },
+        animated: true,
+      });
+    }
+  });
+
+  const _getDirections = async (startLoc, desLoc) => {
+    const url = `https://router.hereapi.com/v8/routes?transportMode=car&origin=${startLoc}&destination=${desLoc}&return=polyline&apiKey=dUJ5QATKNp_h_OfYqzZVrEUC8ajdw09Cm3xLcA1qIYg`;
+    const res = await axios.get(url);
+    const data = res.data;
+    console.log("DATA", data);
+    const route = data.routes[0];
+    console.log("ROUTE", route);
+    if (route) {
+      const points = decode(route.sections[0].polyline);
+      const coords = points.polyline.map((point) => {
+        return {
+          latitude: point[0],
+          longitude: point[1],
+        };
+      });
+      setTempDirection({ coords });
+    }
+    return coords;
+  };
+
+  // const _getDirections = async (startLoc, desLoc) => {
+  //   try {
+  //     const resp = await fetch(
+  //       `https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${desLoc}&key=${directionKey}`
+  //     );
+
+  //     const respJson = await resp.json();
+  //     const response = respJson.routes[0];
+  //     console.log("RES", response);
+  //     const distanceTime = response.legs[0];
+  //     const distance = distanceTime.distance.text;
+  //     const time = distanceTime.duration.text;
+  //     const points = Polyline.decode(
+  //       respJson.routes[0].overview_polyline.points
+  //     );
+  //     const coords = points.map((point) => {
+  //       return {
+  //         latitude: point[0],
+  //         longitude: point[1],
+  //       };
+  //     });
+  //     setTempDirection({ coords, distance, time });
+  //   } catch (error) {
+  //     console.log("Error: ", error);
+  //   }
+  // };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS == "ios" ? "padding" : "height"}
@@ -315,7 +454,6 @@ const MapScreen = () => {
           bottom: 0,
         }}
         onRegionChangeComplete={onRegionChangeComplete}
-        onLayout={() => fitNears(nears)}
       >
         {switchLocationSearch ? (
           <Marker key={123456} coordinate={locationSearch}>
@@ -323,7 +461,11 @@ const MapScreen = () => {
           </Marker>
         ) : null}
         {renderMarkers()}
-        {renderDirection()}
+        <MapView.Polyline
+          strokeWidth={3}
+          strokeColor={color.blueModern1}
+          coordinates={tempDirection.coords}
+        />
       </MapView>
 
       {!switchLocationSearch ? (
@@ -352,6 +494,7 @@ const MapScreen = () => {
         nears={nears}
         labelSearch={labelSearch}
         locationSearch={locationSearch}
+        getDirections={getDirections}
       />
     </KeyboardAvoidingView>
   );

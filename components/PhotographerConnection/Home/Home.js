@@ -15,6 +15,7 @@ import {
 } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
+import customAlert from "./../../Common/CustomAlert/index";
 
 const W = Dimensions.get("window").width;
 const H = Dimensions.get("window").height;
@@ -55,7 +56,7 @@ const Home = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground
-        source={require("./../../../assets/images/background-1.png")}
+        source={require("./../../../assets/images/background-1.jpg")}
         resizeMode="cover"
         style={{
           flex: 1,
@@ -116,6 +117,9 @@ const Home = () => {
                 }
               />
               <Item
+                onPress={() =>
+                  customAlert("Feature will be implemented in near future!")
+                }
                 color1="#6a3093"
                 color2="#a044ff"
                 text="Bills"

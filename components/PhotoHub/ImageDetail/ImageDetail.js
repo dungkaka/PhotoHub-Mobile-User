@@ -6,8 +6,8 @@ import {
   ScrollView,
   TouchableHighlight,
   Modal,
+  Text,
 } from "react-native";
-import { Button, Text } from "expo-ui-kit/src";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { styles } from "./style.index";
 
@@ -15,11 +15,13 @@ import SimilarItem from "./SimilarItem";
 import { random_color } from "../../../utils/f";
 import LikeImage from "./LikeImage";
 import AddToCollectionButton from "./AddToCollectionButton";
+import { useSelector } from "react-redux";
 
 const ImageDetail = () => {
   const navigation = useNavigation();
   // route fo from HubContainer
   const route = useRoute();
+  const { user } = useSelector((store) => store.user);
   const { image } = route.params || {};
 
   useEffect(() => {
@@ -27,6 +29,7 @@ const ImageDetail = () => {
       title: image.name,
     });
   }, []);
+  console.log("image", image);
 
   return (
     <ScrollView>
@@ -45,6 +48,7 @@ const ImageDetail = () => {
               height: 380,
               scale: 0.05,
             }}
+            resizeMode="contain"
           ></Image>
         </TouchableHighlight>
 
@@ -80,7 +84,7 @@ const ImageDetail = () => {
           <View style={{ flex: 1 }}>
             <Text> Tags </Text>
             <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-              {image.tags.map((item) => {
+              {Object.keys(image.tagsCTG).map((item) => {
                 return (
                   <Text
                     key={item}
@@ -93,18 +97,21 @@ const ImageDetail = () => {
               })}
             </View>
           </View>
-          <View
-            style={{
-              flexDirection: "column",
-              alignItems: "stretch",
-            }}
-          >
-            {/* Button Like */}
-            <LikeImage imageId={image.id} likeBy={image.like_by}></LikeImage>
 
-            {/* Button Add To Collection */}
-            <AddToCollectionButton image={image}></AddToCollectionButton>
-          </View>
+          {user && (
+            <View
+              style={{
+                flexDirection: "column",
+                alignItems: "stretch",
+              }}
+            >
+              {/* Button Like */}
+              <LikeImage imageId={image.id} likeBy={image.like_by}></LikeImage>
+
+              {/* Button Add To Collection */}
+              <AddToCollectionButton image={image}></AddToCollectionButton>
+            </View>
+          )}
         </View>
         <SimilarItem></SimilarItem>
       </View>

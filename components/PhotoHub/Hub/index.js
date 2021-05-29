@@ -6,7 +6,7 @@ import TagSelector from "./TagSelector";
 
 const Drawer = createDrawerNavigator();
 
-const Container = () => {
+const Container = ({ drawerAppNavigation }) => {
   const dimensions = useWindowDimensions();
   const widthDrawer = Math.ceil(0.9 * dimensions.width);
 
@@ -22,10 +22,11 @@ const Container = () => {
       }}
       sceneContainerStyle={{ backgroundColor: "transparent" }}
     >
-      <Drawer.Screen
-        name="HubContainer"
-        component={HubContainer}
-      ></Drawer.Screen>
+      <Drawer.Screen name="HubContainer">
+        {(props) => (
+          <HubContainer {...props} drawerAppNavigation={drawerAppNavigation} />
+        )}
+      </Drawer.Screen>
     </Drawer.Navigator>
   );
 };
